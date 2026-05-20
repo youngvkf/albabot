@@ -1,5 +1,5 @@
 -- ============================================================
--- AlbaBot — DDL (팀원 Java 코드 기준 확정 스키마)
+-- AlbaBot — DDL
 -- ============================================================
 CREATE DATABASE IF NOT EXISTS albabot
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
