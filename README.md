@@ -113,10 +113,10 @@ albabot/
 ## 테스트 코드 결과
 <img width="1115" height="583" alt="image" src="https://github.com/user-attachments/assets/974dfdfc-d656-4d6d-a401-1dfbafffa7d7" />
 Main에서 주석처리한 테스트 하드코드를 작동한 결과입니다. 테스트용으로 짠 코드라서 모든 필드 속성을 넣지 않았습니다.
-  - 공고 글 db 삽입
-  -  공고 글 db 업데이트
-  -  공고 글 db 삭제
-  -  사용자 공고 지원 db 삽입
+1. 공고 글 db 삽입
+2. 공고 글 db 업데이트
+3. 공고 글 db 삭제
+4. 사용자 공고 지원 db 삽입
 
 
 ## 정규화
