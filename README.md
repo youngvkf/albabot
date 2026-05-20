@@ -68,6 +68,7 @@ albabot/
 
 자세한 쿼리는 `sql/03_scenario_query.sql` 참고
 
+
 **로그인**
 이메일과 비밀번호를 입력하면 DB에서 사용자를 조회하고, 비밀번호가 일치할 경우 메인 페이지로 이동합니다. 불일치 시 로그인 실패 처리합니다.
 
@@ -79,6 +80,14 @@ albabot/
 
 **리뷰 작성**
 업무 완료 후 구직자와 고용주가 서로 평가할 수 있습니다. 본인이 올린 공고에는 리뷰를 작성할 수 없습니다.
+
+## 기능 명세서
+<img width="1047" height="702" alt="image" src="https://github.com/user-attachments/assets/ab4c4677-1854-4a25-9740-76488dfd2a52" />
+<img width="1032" height="783" alt="image" src="https://github.com/user-attachments/assets/50ad6b65-0b46-4506-8340-c539c0f266df" />
+<img width="1075" height="647" alt="image" src="https://github.com/user-attachments/assets/e9ca24d0-cc83-49c5-b406-ff2606383fd4" />
+
+
+
 
 ## 정규화
 
