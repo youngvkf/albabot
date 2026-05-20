@@ -110,6 +110,10 @@ albabot/
 <img width="1280" height="218" alt="image" src="https://github.com/user-attachments/assets/3d5e8161-1523-460a-a2fa-878e3f4d29f9" />
 <img width="1280" height="448" alt="image" src="https://github.com/user-attachments/assets/8462c6ab-e03d-46e0-8262-e7087cbc860e" />
 
+## 테스트 코드 결과
+<img width="1115" height="583" alt="image" src="https://github.com/user-attachments/assets/974dfdfc-d656-4d6d-a401-1dfbafffa7d7" />
+Main에서 주석처리한 테스트 하드코드를 작동한 결과입니다.
+
 
 ## 정규화
 
