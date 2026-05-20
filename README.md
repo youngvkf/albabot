@@ -99,7 +99,16 @@ albabot/
 <img width="1032" height="783" alt="image" src="https://github.com/user-attachments/assets/50ad6b65-0b46-4506-8340-c539c0f266df" />
 <img width="1075" height="647" alt="image" src="https://github.com/user-attachments/assets/e9ca24d0-cc83-49c5-b406-ff2606383fd4" />
 
-
+## 테이블 생성
+<img width="1280" height="416" alt="image" src="https://github.com/user-attachments/assets/94e6f29a-e186-4764-bc89-460f3b6529be" />
+<img width="1280" height="309" alt="image" src="https://github.com/user-attachments/assets/a4389cfa-5b5f-4bb7-bbee-99d7e50a432c" />
+<img width="1280" height="372" alt="image" src="https://github.com/user-attachments/assets/da18060c-1572-4f5a-9f41-226d380d5fe1" />
+<img width="1280" height="389" alt="image" src="https://github.com/user-attachments/assets/8b465360-3d45-47a9-8e8a-c1fb485792f6" />
+<img width="1280" height="317" alt="image" src="https://github.com/user-attachments/assets/aadc0727-c026-47af-855c-6a7dd19de155" />
+<img width="1280" height="336" alt="image" src="https://github.com/user-attachments/assets/f592b5f4-8d8b-4177-b654-9331b63eef35" />
+<img width="1280" height="320" alt="image" src="https://github.com/user-attachments/assets/1bc9c2ed-9da1-4ffc-81e3-3ed64439d59d" />
+<img width="1280" height="218" alt="image" src="https://github.com/user-attachments/assets/3d5e8161-1523-460a-a2fa-878e3f4d29f9" />
+<img width="1280" height="448" alt="image" src="https://github.com/user-attachments/assets/8462c6ab-e03d-46e0-8262-e7087cbc860e" />
 
 
 ## 정규화
