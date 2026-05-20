@@ -71,15 +71,28 @@ albabot/
 
 **로그인**
 이메일과 비밀번호를 입력하면 DB에서 사용자를 조회하고, 비밀번호가 일치할 경우 메인 페이지로 이동합니다. 불일치 시 로그인 실패 처리합니다.
+<img width="1117" height="606" alt="image" src="https://github.com/user-attachments/assets/06a070a6-4f09-4025-a336-e1757a82c64a" />
+
 
 **공고 지원**
 게시글 상세 페이지에서 지원 버튼 클릭 시 중복 지원 여부를 먼저 확인합니다. 중복이 아닐 경우 applications 테이블에 저장하고 고용주에게 알림을 생성합니다. 두 작업은 트랜잭션으로 묶어 원자성을 보장합니다.
+<img width="967" height="421" alt="image" src="https://github.com/user-attachments/assets/6118e9bf-7b0b-477c-8511-13dd849678ea" />
+
+**공고 작성**
+<img width="1022" height="576" alt="image" src="https://github.com/user-attachments/assets/6d7b99c3-cfd0-40a2-aa93-9c04bc6ae746" />
+
 
 **맞춤 공고 탐색**
 사용자의 선호 카테고리와 일치하는 공고만 필터링하고, 차단한 공고와 사용자의 공고는 자동으로 제외됩니다.
 
 **리뷰 작성**
 업무 완료 후 구직자와 고용주가 서로 평가할 수 있습니다. 본인이 올린 공고에는 리뷰를 작성할 수 없습니다.
+<img width="967" height="421" alt="image" src="https://github.com/user-attachments/assets/c23de30a-3589-4a55-82a9-535f6a2fb425" />
+
+**마이페이지**
+<img width="602" height="573" alt="image" src="https://github.com/user-attachments/assets/4505d7b4-2ba1-46ee-9bb7-9267e781f909" />
+
+
 
 ## 기능 명세서
 <img width="1047" height="702" alt="image" src="https://github.com/user-attachments/assets/ab4c4677-1854-4a25-9740-76488dfd2a52" />
