@@ -1,4 +1,4 @@
-package model;
+package com.albabot.model;
 
 import java.time.LocalDateTime;
 
@@ -12,11 +12,7 @@ public class User {
 	private String preferredTime;
 	private LocalDateTime createdAt;
 	private boolean isActive;
-	
-	private enum Role{
-		JOBSEEKER,
-		EMPLOYER
-	}
+	private Role role;
 
 	public int getUserId() {
 		return userId;
@@ -88,5 +84,13 @@ public class User {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	
+	public void setRole(Role role) {
+		this.role = role;
+	}
+	
+	public Role getRole() {
+		return role;
 	}
 }

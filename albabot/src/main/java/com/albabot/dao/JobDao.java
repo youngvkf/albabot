@@ -1,4 +1,4 @@
-package dao;
+package com.albabot.dao;
 import model.Job;
 import java.sql.*;
 import java.util.ArrayList;
@@ -7,17 +7,17 @@ import java.util.List;
 import albabot_backend.DatabaseConnector;
 
 public class JobDao {
-	private final DatabaseConnector connector;
+	private final DatabaseConnector connection;
 	
-	public JobDao(DatabaseConnector connector) {
-		this.connector = connector;
+	public JobDao(DatabaseConnector connection) {
+		this.connection = connection;
 	}
 	
 	public List<Job> getAllJobs() {
 		List<Job> jobs = new ArrayList<>();
 		String sql = "SELECT * FROM jobs ORDER BY job_id ASC";
 		
-		try (Connection conn = connector.getConnection();
+		try (Connection conn = connection.getConnection();
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sql)){
 				while(rs.next()) {
@@ -38,7 +38,7 @@ public class JobDao {
 	public void insertJob(Job job) {
 		String sql = "INSERT INTO jobs (employer_id, title, category, description) VALUES (?, ?, ?, ?)";
 		
-		try (Connection conn = connector.getConnection();
+		try (Connection conn = connection.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 				
 			pstmt.setInt(1, job.getEmployerId());
@@ -64,7 +64,7 @@ public class JobDao {
 	public void updateJob(Job job) {
 		String sql = "UPDATE jobs SET employer_id = ?, title = ?, category = ?, description = ? WHERE job_id = ?";
 
-		try (Connection conn = connector.getConnection();
+		try (Connection conn = connection.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 			pstmt.setInt(1, job.getEmployerId());
@@ -87,7 +87,7 @@ public class JobDao {
 	public void deleteJob(int jobId) {
 		String sql = "DELETE FROM jobs WHERE job_id = ?";
 
-		try (Connection conn = connector.getConnection();
+		try (Connection conn = connection.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 			pstmt.setInt(1, jobId); // 삭제할 대상 no
@@ -103,3 +103,4 @@ public class JobDao {
 		}
 	}
 }
+
