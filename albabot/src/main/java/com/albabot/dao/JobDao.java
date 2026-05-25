@@ -90,7 +90,7 @@ public class JobDao {
 		try (Connection conn = connection.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-			pstmt.setInt(1, jobId); // 삭제할 대상 no
+			pstmt.setInt(1, jobId);
 
 			int rows = pstmt.executeUpdate();
 			if (rows > 0) {
