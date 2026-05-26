@@ -133,7 +133,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
       </div>
       <div class="job-meta">
         <span th:if="${job.location}"   >📍 <span th:text="${job.location}"></span></span>
-        <span th:if="${job.workHours}"  >🕐 <span th:text="${job.workHours}"></span></span>
+        <span th:if="${job.work_hours}"  >🕐 <span th:text="${job.workHours}"></span></span>
         <span th:if="${job.deadline}"   >📅 <span th:text="${job.deadline}"></span></span>
       </div>
       <div class="job-footer">
