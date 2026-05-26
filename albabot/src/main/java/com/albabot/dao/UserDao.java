@@ -42,6 +42,8 @@ public class UserDao {
 						u.setPreferredTime(rs.getString("preferred_time"));
 						u.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 						u.setActive(rs.getBoolean("is_active"));
+						
+						System.out.println(rs.getString("email"));
 						return u;
 					}
 			} catch (SQLException e) {
