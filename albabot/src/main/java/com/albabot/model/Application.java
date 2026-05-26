@@ -8,6 +8,8 @@ public class Application {
 	private int jobId;
 	private LocalDateTime appliedAt;
 	private String coverLetter;
+	private String status;
+	private String jobTitle;
 	
 	private enum Status{
 		PENDING,
@@ -62,6 +64,10 @@ public class Application {
 	public void setCoverLetter(String coverLetter) {
 		this.coverLetter = coverLetter;
 	}
-	
+
+	public String getStatus() { return status; }
+	public void setStatus(String status) { this.status = status; }
+	public String getJobTitle() { return jobTitle; }
+	public void setJobTitle(String jobTitle) { this.jobTitle = jobTitle; }
 	
 }
