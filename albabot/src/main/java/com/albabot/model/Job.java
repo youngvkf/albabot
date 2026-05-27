@@ -7,17 +7,13 @@ public class Job {
 	private int employerId;
 	private String title;
 	private String category;
-	private int hourlyWage;
+	private String hourlyWage;
 	private String location;
 	private String work_hours;
 	private LocalDateTime deadline;
 	private String description;
 	private LocalDateTime createdAt;
-	
-	private enum Status{
-		OPEN,
-		CLOSED
-	}
+	private Status status;
 	
 	public Job() {};
 	
@@ -68,11 +64,11 @@ public class Job {
 		this.category = category;
 	}
 
-	public int getHourlyWage() {
+	public String getHourlyWage() {
 		return hourlyWage;
 	}
 
-	public void setHourlyWage(int hourlyWage) {
+	public void setHourlyWage(String hourlyWage) {
 		this.hourlyWage = hourlyWage;
 	}
 
@@ -116,5 +112,11 @@ public class Job {
 		this.createdAt = createdAt;
 	}
 	
+	public void setStatus(Status status) {
+		this.status = status;
+	}
 	
+	public Status getStatus() {
+		return status;
+	}
 }

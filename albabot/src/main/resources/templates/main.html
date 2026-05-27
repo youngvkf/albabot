@@ -96,6 +96,24 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
 .nav-icon { font-size: 22px; }
 .nav-label { font-size: 11px; color: var(--text3); font-weight: 500; }
 .nav-item.active .nav-label { color: var(--primary); font-weight: 700; }
+.write-job-area {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+.write-job-btn {
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: var(--primary);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(10,191,138,0.18);
+}
+.write-job-btn:hover {
+  background: var(--primary-dark);
+}
 </style>
 </head>
 <body>
@@ -119,6 +137,10 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
     <a th:href="@{/jobs(category='배달')}"     th:classappend="${selectedCategory == '배달'} ? 'active'"     class="cat-btn">배달</a>
     <a th:href="@{/jobs(category='주방/요리')}" th:classappend="${selectedCategory == '주방/요리'} ? 'active'" class="cat-btn">주방/요리</a>
   </div>
+  <div class="write-job-area"
+       th:if="${loginUser != null and loginUser.role == 'employer'}">
+    <a th:href="@{/jobs/new}" class="write-job-btn">+ 공고 작성</a>
+  </div>
   <div class="job-count">공고 <span th:text="${#lists.size(jobs)}">0</span>개</div>
   <div class="job-list">
     <a th:each="job : ${jobs}"
@@ -133,7 +155,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
       </div>
       <div class="job-meta">
         <span th:if="${job.location}"   >📍 <span th:text="${job.location}"></span></span>
-        <span th:if="${job.work_hours}"  >🕐 <span th:text="${job.workHours}"></span></span>
+        <span th:if="${job.work_hours}"  >🕐 <span th:text="${job.work_hours}"></span></span>
         <span th:if="${job.deadline}"   >📅 <span th:text="${job.deadline}"></span></span>
       </div>
       <div class="job-footer">

@@ -1,5 +1,6 @@
 package com.albabot.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -18,10 +19,27 @@ public class JobService {
 	public List<Job> showAllJobs(){
 		List<Job> jobs = jobDao.getAllJobs();
 		
+		if (jobs.isEmpty() || jobs == null) {
+			return new ArrayList<>();
+		}
+		
+		return jobs;
+	}
+	
+	public List<Job> showJobsByCategory(String category){
+		List<Job> jobs = jobDao.getAllJobs();
+		List<Job> filteredJobs = new ArrayList<Job>();
+		
 		if (jobs.isEmpty()) {
 			return null;
 		}
 		
-		return jobs;
+		for (Job job : jobs) {
+			if (job.getCategory().equals(category)) {
+				filteredJobs.add(job);
+			}
+		}
+		
+		return filteredJobs;
 	}
 }

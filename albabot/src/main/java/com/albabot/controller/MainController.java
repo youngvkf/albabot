@@ -37,7 +37,10 @@ public class MainController {
 
     // 메인 페이지 화면 매핑
     @GetMapping("/main")
-    public String mainPage(Model model) {
+    public String mainPage(Model model, HttpSession session) {
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	model.addAttribute("loginUser", loginUser);
+    	
         model.addAttribute("jobs", jobService.showAllJobs());
         model.addAttribute("selectedCategory", null);
         return "main";
@@ -45,12 +48,15 @@ public class MainController {
 
     @GetMapping("/jobs")
     public String viewJobs(@RequestParam(required = false) String category,
-    		Model model) {
+    		Model model, HttpSession session) {
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	model.addAttribute("loginUser", loginUser);
+    	
     	 if (category == null || category.isBlank()) {
     	        model.addAttribute("jobs", jobService.showAllJobs());
     	        model.addAttribute("selectedCategory", null);
     	    } else {
-    	        //model.addAttribute("jobs", jobService.showJobsByCategory(category));
+    	        model.addAttribute("jobs", jobService.showJobsByCategory(category));
     	        model.addAttribute("selectedCategory", category);
     	    }
 

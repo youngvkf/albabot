@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.albabot.model.Job;
+import com.albabot.model.Status;
 
 @Repository // 스프링 빈으로 등록
 public class JobDao {
@@ -33,7 +35,13 @@ public class JobDao {
 					j.setEmployerId(rs.getInt("employer_id"));
 					j.setTitle(rs.getString("title"));
 					j.setCategory(rs.getString("category"));
+					j.setHourlyWage(rs.getString("hourly_wage"));
+					j.setLocation(rs.getString("location"));
+					j.setWork_hours(rs.getString("work_hours"));
+					j.setDeadline(rs.getTimestamp("deadline").toLocalDateTime());
 					j.setDescription(rs.getString("description"));
+					j.setStatus(Status.valueOf(rs.getString("status")));
+					j.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 					jobs.add(j);
 				}
 		} catch (SQLException e) {
@@ -43,7 +51,7 @@ public class JobDao {
 	}
 	
 	public void insertJob(Job job) {
-		String sql = "INSERT INTO jobs (employer_id, title, category, description) VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO jobs (employer_id, title, category, hourly_wage, location, work_hours, deadline, description, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try (Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
@@ -51,7 +59,13 @@ public class JobDao {
 			pstmt.setInt(1, job.getEmployerId());
 			pstmt.setString(2, job.getTitle());
 			pstmt.setString(3, job.getCategory());
-			pstmt.setString(4, job.getDescription());
+			pstmt.setString(4, job.getHourlyWage());
+			pstmt.setString(5, job.getLocation());
+			pstmt.setString(6, job.getWork_hours());
+			pstmt.setTimestamp(7, Timestamp.valueOf(job.getDeadline()));
+			pstmt.setString(8, job.getDescription());
+			pstmt.setString(9, job.getStatus().name());
+			pstmt.setTimestamp(9, Timestamp.valueOf(job.getCreatedAt()));
 			
 			pstmt.executeUpdate();
 			
@@ -126,7 +140,7 @@ public class JobDao {
 					j.setEmployerId(rs.getInt("employer_id"));
 					j.setTitle(rs.getString("title"));
 					j.setCategory(rs.getString("category"));
-					j.setHourlyWage(rs.getInt("hourly_wage")); 
+					j.setHourlyWage(rs.getString("hourly_wage")); 
 					j.setLocation(rs.getString("location"));   
 					j.setWork_hours(rs.getString("work_hours")); 
 					j.setDescription(rs.getString("description"));
