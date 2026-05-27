@@ -95,10 +95,12 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
 </style>
 </head>
 <body>
-<div class="header">
-  <a href="/jobs" class="back-btn">←</a>
-  <div class="header-title">공고 상세</div>
-</div>
+	<div class="header">
+	  <a th:href="@{/main}" class="back-btn">
+	    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+	  </a>
+	  <div class="header-title">공고 상세</div>
+	</div>
 <div class="container">
   <!-- 지원 결과 메시지 -->
   <div class="msg-success" th:if="${successMsg}" th:text="${successMsg}"></div>
@@ -139,17 +141,45 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
  
   <!-- 후기 및 평점 -->
   <div class="section">
-    <div class="section-title">후기 및 평점</div>
-    <div th:if="${#lists.isEmpty(evaluations)}" class="no-review">아직 후기가 없어요</div>
-    <div th:each="eval : ${evaluations}" class="review-item">
-      <div class="review-top">
-        <span class="reviewer" th:text="${eval.reviewerName} ?: '익명'">이름</span>
-        <span class="stars"
-              th:text="${'★'.repeat(eval.score)} + ${'☆'.repeat(5 - eval.score)}">★★★★★</span>
+      <div class="section-title">후기 및 평점</div>
+      <div th:if="${#lists.isEmpty(evaluations)}" class="no-review">아직 후기가 없어요</div>
+      <div th:each="eval : ${evaluations}" class="review-item">
+        <div class="review-top">
+          <span class="reviewer" th:text="${eval.reviewerName} ?: '익명'">이름</span>
+          <span class="stars"
+                th:text="${'★'.repeat(eval.score)} + ${'☆'.repeat(5 - eval.score)}">★★★★★</span>
+        </div>
+        <div class="review-text" th:text="${eval.comment}">후기 내용</div>
       </div>
-      <div class="review-text" th:text="${eval.comment}">후기 내용</div>
-    </div>
-  </div>
+
+      <div class="review-form-box" th:if="${loginUser != null and !isEmployerMe}" style="margin-top: 24px; padding-top: 20px; border-top: 1px dashed var(--border);">
+        <div style="font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 12px;">✨ 한 줄 근무 후기 남기기</div>
+        
+        <form th:action="@{/jobs/{id}/review(id=${job.jobId})}" method="post">
+          
+          <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 13px; color: var(--text2); font-weight: 500;">별점 선택:</span>
+            <select name="score" style="padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 13px; color: #F59E0B; font-weight: 600; outline: none;">
+              <option value="5" style="color:#F59E0B;">★★★★★ (5점)</option>
+              <option value="4" style="color:#F59E0B;">★★★★☆ (4점)</option>
+              <option value="3" style="color:#F59E0B;">★★★☆☆ (3점)</option>
+              <option value="2" style="color:#F59E0B;">★★☆☆☆ (2점)</option>
+              <option value="1" style="color:#F59E0B;">★☆☆☆☆ (1점)</option>
+            </select>
+          </div>
+
+          <div class="apply-section" style="padding: 0; border: none; margin-bottom: 10px;">
+            <textarea name="comment" placeholder="근무 환경이나 사장님의 친절도 등 솔직한 한 줄 평을 남겨주세요." required style="min-height: 70px;"></textarea>
+          </div>
+
+          <button type="submit" class="apply-btn" style="padding: 12px; font-size: 14px; border-radius: 10px;">리뷰 등록하기</button>
+        </form>
+      </div>
+      
+      <div th:if="${isEmployerMe}" style="margin-top: 16px; font-size: 12px; color: var(--text3); text-align: center;">
+        내가 등록한 공고글에는 리뷰를 남길 수 없습니다.
+      </div>
+      </div>
  
   <!-- 지원하기 폼 -->
   <div class="apply-section" th:if="${loginUser != null and !alreadyApplied}">

@@ -1,23 +1,30 @@
 package com.albabot.dao;
-import model.Job;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import albabot_backend.DatabaseConnector;
+import javax.sql.DataSource; // 스프링 표준 데이터소스로 변경
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+import com.albabot.model.Job;
+
+@Repository // 스프링 빈으로 등록
 public class JobDao {
-	private final DatabaseConnector connection;
-	
-	public JobDao(DatabaseConnector connection) {
-		this.connection = connection;
-	}
+
+	@Autowired
+	private DataSource dataSource; // UserDao와 동일하게 DataSource 사용
 	
 	public List<Job> getAllJobs() {
 		List<Job> jobs = new ArrayList<>();
 		String sql = "SELECT * FROM jobs ORDER BY job_id ASC";
 		
-		try (Connection conn = connection.getConnection();
+		try (Connection conn = dataSource.getConnection();
 			Statement stmt = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(sql)){
 				while(rs.next()) {
@@ -38,7 +45,7 @@ public class JobDao {
 	public void insertJob(Job job) {
 		String sql = "INSERT INTO jobs (employer_id, title, category, description) VALUES (?, ?, ?, ?)";
 		
-		try (Connection conn = connection.getConnection();
+		try (Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 				
 			pstmt.setInt(1, job.getEmployerId());
@@ -64,7 +71,7 @@ public class JobDao {
 	public void updateJob(Job job) {
 		String sql = "UPDATE jobs SET employer_id = ?, title = ?, category = ?, description = ? WHERE job_id = ?";
 
-		try (Connection conn = connection.getConnection();
+		try (Connection conn = dataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 			pstmt.setInt(1, job.getEmployerId());
@@ -87,7 +94,7 @@ public class JobDao {
 	public void deleteJob(int jobId) {
 		String sql = "DELETE FROM jobs WHERE job_id = ?";
 
-		try (Connection conn = connection.getConnection();
+		try (Connection conn = dataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
 			pstmt.setInt(1, jobId);
@@ -102,5 +109,41 @@ public class JobDao {
 			e.printStackTrace();
 		}
 	}
-}
 
+	// 공고 ID로 단건 조회하는 메서드
+	public Job getJobById(int jobId) {
+		String sql = "SELECT * FROM jobs WHERE job_id = ?";
+		
+		try (Connection conn = dataSource.getConnection();
+			 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			
+			pstmt.setInt(1, jobId);
+			
+			try (ResultSet rs = pstmt.executeQuery()) {
+				if (rs.next()) {
+					Job j = new Job();
+					j.setJobId(rs.getInt("job_id"));
+					j.setEmployerId(rs.getInt("employer_id"));
+					j.setTitle(rs.getString("title"));
+					j.setCategory(rs.getString("category"));
+					j.setHourlyWage(rs.getInt("hourly_wage")); 
+					j.setLocation(rs.getString("location"));   
+					j.setWork_hours(rs.getString("work_hours")); 
+					j.setDescription(rs.getString("description"));
+					
+					if (rs.getTimestamp("deadline") != null) {
+						j.setDeadline(rs.getTimestamp("deadline").toLocalDateTime());
+					}
+					if (rs.getTimestamp("created_at") != null) {
+						j.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+					}
+					
+					return j;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}
