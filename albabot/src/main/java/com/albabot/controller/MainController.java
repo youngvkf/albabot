@@ -18,27 +18,45 @@ import com.albabot.model.Job;
 import com.albabot.model.Evaluation;
 import com.albabot.model.User;
 import com.albabot.service.EvaluationService;
+import com.albabot.service.JobService;
 
 @Controller
 public class MainController {
 
     private final JobDao jobDao;
     private final EvaluationDao evaluationDao;
+    private final JobService jobService;
     private final EvaluationService evaluationService;
 
-    public MainController(JobDao jobDao, EvaluationDao evaluationDao, EvaluationService evaluationService) {
+    public MainController(JobDao jobDao, EvaluationDao evaluationDao, JobService jobService, EvaluationService evaluationService) {
         this.jobDao = jobDao;
         this.evaluationDao = evaluationDao;
+        this.jobService = jobService;
         this.evaluationService = evaluationService;
     }
 
     // 메인 페이지 화면 매핑
     @GetMapping("/main")
     public String mainPage(Model model) {
-        model.addAttribute("jobs", new ArrayList<>());
+        model.addAttribute("jobs", jobService.showAllJobs());
+        model.addAttribute("selectedCategory", null);
         return "main";
     }
 
+    @GetMapping("/jobs")
+    public String viewJobs(@RequestParam(required = false) String category,
+    		Model model) {
+    	 if (category == null || category.isBlank()) {
+    	        model.addAttribute("jobs", jobService.showAllJobs());
+    	        model.addAttribute("selectedCategory", null);
+    	    } else {
+    	        //model.addAttribute("jobs", jobService.showJobsByCategory(category));
+    	        model.addAttribute("selectedCategory", category);
+    	    }
+
+    	    return "main";
+    }
+    
  // 공고 상세 페이지 조회 매핑
     @GetMapping("/jobs/{id}")
     public String jobDetail(@PathVariable("id") int jobId, Model model, HttpSession session) {
