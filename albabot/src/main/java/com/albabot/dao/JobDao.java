@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class JobDao {
 	}
 	
 	public void insertJob(Job job) {
-		String sql = "INSERT INTO jobs (employer_id, title, category, hourly_wage, location, work_hours, deadline, description, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO jobs (employer_id, title, category, hourly_wage, location, work_hours, deadline, description, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try (Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
@@ -64,8 +65,7 @@ public class JobDao {
 			pstmt.setString(6, job.getWork_hours());
 			pstmt.setTimestamp(7, Timestamp.valueOf(job.getDeadline()));
 			pstmt.setString(8, job.getDescription());
-			pstmt.setString(9, job.getStatus().name());
-			pstmt.setTimestamp(9, Timestamp.valueOf(job.getCreatedAt()));
+			pstmt.setString(9, "OPEN");
 			
 			pstmt.executeUpdate();
 			

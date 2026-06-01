@@ -5,15 +5,20 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.albabot.dao.ApplicationDao;
 import com.albabot.dao.JobDao;
+import com.albabot.model.Application;
 import com.albabot.model.Job;
+import com.albabot.model.User;
 
 @Service
 public class JobService {
 	private final JobDao jobDao;
+	private final ApplicationDao applicationDao;
 	
-	public JobService(JobDao jobDao) {
+	public JobService(JobDao jobDao, ApplicationDao applicationDao) {
 		this.jobDao = jobDao;
+		this.applicationDao = applicationDao;
 	}
 	
 	public List<Job> showAllJobs(){
@@ -41,5 +46,34 @@ public class JobService {
 		}
 		
 		return filteredJobs;
+	}
+	
+	public void addJob(Job job) {
+		jobDao.insertJob(job);
+	}
+	
+	public boolean applicate(int jobId, User loginUser, String coverLetter) {
+		Job job = jobDao.getJobById(jobId);
+		
+		if (job == null || loginUser == null) {
+	        return false;
+	    }
+
+	    if (job.getEmployerId() == loginUser.getUserId()) {
+	        return false;
+	    }
+
+	    if (applicationDao.hasApplied(loginUser.getUserId(), jobId)) {
+	        return false;
+	    }
+		
+		Application app = new Application();
+		app.setUserId(loginUser.getUserId());
+		app.setJobId(jobId);
+		app.setStatus("PENDING");
+		app.setCoverLetter(coverLetter);
+		applicationDao.insertApplication(app);
+		
+		return true;
 	}
 }

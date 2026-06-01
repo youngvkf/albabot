@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+	<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+		<head>
+			<meta charset="UTF-8">
+			<title>AlbaBot - 공고 작성</title>
+			<style>
+				@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+				*{
+				    margin:0;
+				    padding:0;
+				    box-sizing:border-box;
+				}
+
+				:root{
+				    --primary:#0ABF8A;
+				    --primary-dark:#059669;
+				    --bg:#F0FDF9;
+				    --surface:#FFFFFF;
+				    --border:#D1FAE5;
+				    --text:#111827;
+				    --text2:#6B7280;
+				}
+
+				body{
+				    font-family:'Noto Sans KR', sans-serif;
+				    background:var(--bg);
+				    min-height:100vh;
+				}
+
+				.container{
+				    max-width:700px;
+				    margin:40px auto;
+				    padding:0 20px;
+				}
+
+				.form-card{
+				    background:var(--surface);
+				    border:1px solid var(--border);
+				    border-radius:20px;
+				    padding:30px;
+				}
+
+				.title{
+				    font-size:26px;
+				    font-weight:900;
+				    color:var(--text);
+				    margin-bottom:25px;
+				}
+
+				.form-group{
+				    margin-bottom:18px;
+				}
+
+				.form-group label{
+				    display:block;
+				    margin-bottom:8px;
+				    font-size:14px;
+				    font-weight:700;
+				    color:var(--text);
+				}
+
+				.form-group input,
+				.form-group select,
+				.form-group textarea{
+				    width:100%;
+				    padding:14px 16px;
+				    border:1.5px solid #E5E7EB;
+				    border-radius:12px;
+				    font-size:14px;
+				    font-family:inherit;
+				    outline:none;
+				    transition:0.2s;
+				}
+
+				.form-group input:focus,
+				.form-group select:focus,
+				.form-group textarea:focus{
+				    border-color:var(--primary);
+				}
+
+				.form-group textarea{
+				    min-height:150px;
+				    resize:vertical;
+				}
+
+				.row{
+				    display:grid;
+				    grid-template-columns:1fr 1fr;
+				    gap:14px;
+				}
+
+				.submit-btn{
+				    width:100%;
+				    padding:16px;
+				    border:none;
+				    border-radius:14px;
+				    background:linear-gradient(
+				        135deg,
+				        var(--primary),
+				        var(--primary-dark)
+				    );
+				    color:white;
+				    font-size:16px;
+				    font-weight:700;
+				    cursor:pointer;
+				    margin-top:10px;
+				}
+
+				.submit-btn:hover{
+				    opacity:0.9;
+				}
+
+				.back-btn{
+				    display:inline-block;
+				    margin-bottom:18px;
+				    text-decoration:none;
+				    color:var(--primary-dark);
+				    font-weight:700;
+				}
+			</style>
+		</head>
+		<body>
+			<div class="container">
+
+			    <a href="/jobs" class="back-btn">← 목록으로</a>
+
+			    <div class="form-card">
+
+			        <div class="title">공고 작성</div>
+
+			        <form th:action="@{/jobs/new}"
+			              th:object="${job}"
+			              method="post">
+
+			            <div class="form-group">
+			                <label>공고 제목</label>
+			                <input type="text" th:field="*{title}">
+			            </div>
+
+			            <div class="row">
+			                <div class="form-group">
+			                    <label>카테고리</label>
+			                    <select th:field="*{category}">
+			                        <option value="카페/음료">카페/음료</option>
+			                        <option value="편의점">편의점</option>
+			                        <option value="서빙/홀">서빙/홀</option>
+			                        <option value="배달">배달</option>
+			                        <option value="주방/요리">주방/요리</option>
+			                    </select>
+			                </div>
+
+			                <div class="form-group">
+			                    <label>시급</label>
+			                    <input type="number" th:field="*{hourlyWage}">
+			                </div>
+			            </div>
+
+			            <div class="form-group">
+			                <label>근무 장소</label>
+			                <input type="text" th:field="*{location}">
+			            </div>
+
+			            <div class="form-group">
+			                <label>근무 시간</label>
+			                <input type="text"
+			                       th:field="*{work_hours}"
+			                       placeholder="예) 평일 09:00~18:00">
+			            </div>
+
+			            <div class="form-group">
+			                <label>마감일</label>
+			                <input type="datetime-local"
+			                       th:field="*{deadline}">
+			            </div>
+
+			            <div class="form-group">
+			                <label>업무 설명</label>
+			                <textarea th:field="*{description}"></textarea>
+			            </div>
+
+			            <button type="submit"
+			                    class="submit-btn">
+			                공고 등록하기
+			            </button>
+
+			        </form>
+
+			    </div>
+			</div>
+
+		</body>
+	</html>

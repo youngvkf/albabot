@@ -138,7 +138,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
     <a th:href="@{/jobs(category='주방/요리')}" th:classappend="${selectedCategory == '주방/요리'} ? 'active'" class="cat-btn">주방/요리</a>
   </div>
   <div class="write-job-area"
-       th:if="${loginUser != null and loginUser.role == 'employer'}">
+       th:if="${loginUser != null and loginUser.role.name() == 'EMPLOYER'}">
     <a th:href="@{/jobs/new}" class="write-job-btn">+ 공고 작성</a>
   </div>
   <div class="job-count">공고 <span th:text="${#lists.size(jobs)}">0</span>개</div>

@@ -37,14 +37,12 @@ public class LoginController {
 		User user = userService.login(email, password);
 		
 		if(user != null) {
-			// 💡 [수정] 프론트엔드(Thymeleaf) 구조에 맞게 "loginUser"라는 Key로 유저 객체를 통째로 세션에 저장합니다.
 			session.setAttribute("loginUser", user);
 			System.out.println("로그인 성공: " + user.getName() + "님");
 			return "redirect:/main";
 		}
 		
 		System.out.println("로그인 실패: 이메일 또는 비밀번호 불일치");
-		// 💡 [수정] 로그인 실패 시 에러 파라미터를 달고 로그인 페이지로 리다이렉트합니다.
 		return "redirect:/login?error=true";
 	}
 }

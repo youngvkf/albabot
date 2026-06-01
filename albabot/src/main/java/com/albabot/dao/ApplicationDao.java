@@ -19,14 +19,15 @@ public class ApplicationDao {
 	private DataSource dataSource; // 스프링 DataSource 자동 주입
 	
 	public void insertApplication(Application app) {
-		String sql = "INSERT INTO applications (user_id, job_id, cover_letter) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO applications (user_id, job_id, status, cover_letter) VALUES (?, ?, ?, ?)";
 		
 		try (Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
 				
 			pstmt.setInt(1, app.getUserId());
 			pstmt.setInt(2, app.getJobId());
-			pstmt.setString(3, app.getCoverLetter());
+			pstmt.setString(3, app.getStatus());
+			pstmt.setString(4, app.getCoverLetter());
 			
 			pstmt.executeUpdate();
 			
@@ -44,5 +45,26 @@ public class ApplicationDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean hasApplied(int userId, int jobId) {
+		String sql = "SELECT COUNT(*) FROM applications WHERE user_id = ? AND job_id = ?";
+		try (Connection conn = dataSource.getConnection();
+		         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+		        pstmt.setInt(1, userId);
+		        pstmt.setInt(2, jobId);
+
+		        try (ResultSet rs = pstmt.executeQuery()) {
+		            if (rs.next()) {
+		                return rs.getInt(1) > 0;
+		            }
+		        }
+
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+
+		    return false;
 	}
 }
