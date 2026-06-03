@@ -36,7 +36,7 @@ albabot/
 │   └── 03_scenario_query.sql # 동작 시나리오별 쿼리
 ├── docs/
 │   └── 정규화_검토보고서.docx
-├── ERD_AlbaBot.png
+├── Erd_edit_AlbaBot.png
 └── README.md
 ```
 
