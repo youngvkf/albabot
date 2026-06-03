@@ -127,7 +127,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
       <div class="section-title">선호 카테고리</div>
     </div>
     <div class="cat-tags">
-      <span th:each="cat : ${categories}" class="cat-tag" th:text="${cat.category}">카테고리</span>
+      <span th:each="cat : ${categories}" class="cat-tag" th:text="${cat}">카테고리</span>
       <span th:if="${#lists.isEmpty(categories)}" style="font-size:14px;color:#9CA3AF;">설정된 카테고리가 없어요</span>
     </div>
   </div>
