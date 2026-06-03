@@ -8,9 +8,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.albabot.dao.JobDao;
 import com.albabot.dao.EvaluationDao;
@@ -67,31 +69,65 @@ public class MainController {
     @GetMapping("/jobs/{id}")
     public String jobDetail(@PathVariable("id") int jobId, Model model, HttpSession session) {
         
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	model.addAttribute("loginUser", loginUser); 
+    	
         Job job = jobDao.getJobById(jobId); 
         model.addAttribute("job", job);
 
         // 해당 공고에 달린 후기(리뷰) 목록을 가져와서 detail.html에 던져주기
         List<Evaluation> evaluations = evaluationDao.getEvaluationsByJobId(jobId);
         model.addAttribute("evaluations", evaluations);
-
-        // 세션에서 로그인한 유저 정보를 꺼내 화면(Thymeleaf)으로 명시적으로 전달
-        User loginUser = (User) session.getAttribute("loginUser"); 
-        model.addAttribute("loginUser", loginUser); 
-
+        
         // 지원자 수 표기 오류(null명) 방지
         model.addAttribute("applicationCount", 2); 
         
-        // 💡 [수정] 기본값을 false로 명시해 두고, 본인 공고일 때만 true로 변경하여 확실한 boolean 값을 전달합니다.
+        // 기본값을 false로 명시해 두고, 본인 공고일 때만 true로 변경하여 확실한 boolean 값을 전달합니다.
         boolean isEmployerMe = false;
         if (loginUser != null && job != null && loginUser.getUserId() == job.getEmployerId()) {
             isEmployerMe = true;
         }
-        model.addAttribute("isEmployerMe", isEmployerMe); // 👈 true/false가 항상 확실하게 명시됩니다!
-        
+        model.addAttribute("isEmployerMe", isEmployerMe);         
         // 팀원분들과의 연동을 위해 이미 지원했는지 여부 조건도 우선 false로 안전하게 대입해 둡니다.
+        
         model.addAttribute("alreadyApplied", false);
         
         return "detail"; 
+    }
+    
+    @PostMapping("/jobs/{id}/apply")
+    public String applyJob(@PathVariable int id,
+                           @RequestParam(required = false) String coverLetter,
+                           HttpSession session,
+                           RedirectAttributes redirectAttributes) {
+
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        boolean result = jobService.applicate(id, loginUser, coverLetter);
+
+        if (result) {
+            redirectAttributes.addFlashAttribute("successMsg", "지원이 완료되었습니다!");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMsg", "지원할 수 없는 공고입니다.");
+        }
+
+        return "redirect:/jobs/" + id;
+    }
+    
+    @GetMapping("/jobs/new")
+    public String newJobForm(Model model, HttpSession session) {
+    	model.addAttribute("job", new Job());
+    	return "job-form";
+    }
+    
+    @PostMapping("/jobs/new")
+    public String createJob(@ModelAttribute Job job, HttpSession session) {
+    	User loginUser = (User) session.getAttribute("loginUser");
+    	
+    	job.setEmployerId(loginUser.getUserId());
+    	jobService.addJob(job);
+    	
+    	return "redirect:/jobs";
     }
     
     @PostMapping("/jobs/{id}/review")

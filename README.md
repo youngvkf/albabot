@@ -42,10 +42,10 @@ albabot/
 
 ## ERD
 
-![ERD](ERD_AlbaBot.png)
+![ERD](ERD_edit_AlbaBot.png)
 
-총 9개 테이블로 구성되어 있습니다.
-`users`, `user_categories`, `jobs`, `applications`, `evaluations`, `reports`, `blocks`, `recommendations`, `notifications`
+총 5개 테이블로 구성되어 있습니다.
+`users`, `user_categories`, `jobs`, `applications`, `evaluations`
 
 ## 실행 방법
 
