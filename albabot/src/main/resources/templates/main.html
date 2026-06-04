@@ -156,13 +156,12 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
       <div class="job-meta">
         <span th:if="${job.location}"   >📍 <span th:text="${job.location}"></span></span>
         <span th:if="${job.work_hours}"  >🕐 <span th:text="${job.work_hours}"></span></span>
-        <span th:if="${job.deadline}"   >📅 <span th:text="${job.deadline}"></span></span>
+        <span th:if="${job.deadline}"   >📅 <span th:text="${#temporals.format(job.deadline, 'yyyy-MM-dd')}"></span></span>
       </div>
       <div class="job-footer">
         <div class="job-wage"
              th:if="${job.hourlyWage != null}"
              th:text="'시급 ' + ${#numbers.formatInteger(job.hourlyWage,3,'COMMA')} + '원'">시급</div>
-        <div class="job-deadline" th:text="'마감 ' + ${job.deadline}"></div>
       </div>
     </a>
     <div class="empty-state" th:if="${#lists.isEmpty(jobs)}">
@@ -175,10 +174,6 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
   <a href="/jobs" class="nav-item active">
     <div class="nav-icon">🏠</div>
     <div class="nav-label" style="color:#0ABF8A">홈</div>
-  </a>
-  <a href="/my/applications" class="nav-item">
-    <div class="nav-icon">📋</div>
-    <div class="nav-label">지원현황</div>
   </a>
   <a href="/mypage" class="nav-item">
     <div class="nav-icon">👤</div>
