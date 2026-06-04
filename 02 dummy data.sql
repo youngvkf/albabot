@@ -8,8 +8,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE user_categories;
 TRUNCATE TABLE applications;
 TRUNCATE TABLE evaluations;
-TRUNCATE TABLE blocks;
-TRUNCATE TABLE notifications;
 TRUNCATE TABLE jobs;
 TRUNCATE TABLE users;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -46,11 +44,3 @@ INSERT INTO applications (user_id, job_id, status, cover_letter) VALUES
 INSERT INTO evaluations (reviewer_id, reviewee_id, job_id, score, comment, eval_type) VALUES
 (4, 1, 1, 5, '매우 성실하고 친절합니다.', 'EMPLOYER_TO_SEEKER'),
 (1, 4, 1, 4, '좋은 근무 환경이었습니다.', 'SEEKER_TO_EMPLOYER');
-
--- 6. blocks
-INSERT INTO blocks (blocker_id, blocked_user_id) VALUES (1, 5);
-
--- 7. notifications
-INSERT INTO notifications (user_id, type, message) VALUES
-(4, 'APPLICATION_RESULT', '장화인님이 [강남 카페 주말 알바] 공고에 지원했습니다.'),
-(1, 'APPLICATION_RESULT', '[강남 카페 주말 알바] 공고에 합격하셨습니다!');
