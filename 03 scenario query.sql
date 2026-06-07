@@ -3,108 +3,104 @@
 -- ============================================================
 USE albabot;
 
+-- ────────────────────────────────────────────────────────────
 -- [시나리오 1] 로그인
--- 이메일 조회 → Java에서 BCrypt.matches()로 비밀번호 검증
-SELECT user_id, name, role, region, password_hash
+-- UserDao.findByEmail → Java BCrypt.matches()로 비밀번호 검증
+-- ────────────────────────────────────────────────────────────
+SELECT user_id, name, role, region, password_hash,
+       preferred_time, is_active
 FROM users
-WHERE email = 'hwain@example.com'
-  AND is_active = 1;
+WHERE email = 'hwain@example.com';
 
--- [시나리오 2] 게시물 목록 조회 (메인 페이지)
--- 2-1. 전체 공고 조회
-SELECT job_id, title, category, hourly_wage, location, work_hours, deadline, status
+-- ────────────────────────────────────────────────────────────
+-- [시나리오 2] 전체 공고 목록 조회
+-- JobDao.getAllJobs
+-- ────────────────────────────────────────────────────────────
+SELECT *
+FROM jobs
+ORDER BY job_id ASC;
+
+-- ────────────────────────────────────────────────────────────
+-- [시나리오 3] 카테고리 필터링 조회 (서브쿼리)
+-- JobService.showJobsByCategory + user_categories 활용
+-- ────────────────────────────────────────────────────────────
+SELECT *
 FROM jobs
 WHERE status = 'OPEN'
-  AND deadline >= NOW()
-ORDER BY created_at DESC;
-
--- 2-2. 선호 카테고리 기반 필터링 (서브쿼리)
-SELECT j.job_id, j.title, j.category, j.hourly_wage, j.location, j.work_hours, j.deadline
-FROM jobs j
-WHERE j.status = 'OPEN'
-  AND j.deadline >= NOW()
-  AND j.category IN (
+  AND category IN (
       SELECT category FROM user_categories WHERE user_id = 1)
-ORDER BY j.created_at DESC;
+ORDER BY job_id ASC;
 
--- [시나리오 3] 게시물 상세 조회 (JOIN)
+-- ────────────────────────────────────────────────────────────
+-- [시나리오 4] 공고 상세 조회 (JOIN)
+-- JobDao.getJobById + users JOIN
+-- ────────────────────────────────────────────────────────────
 SELECT j.*, u.name AS employer_name
 FROM jobs j
 JOIN users u ON j.employer_id = u.user_id
 WHERE j.job_id = 1;
 
--- [시나리오 4] 게시물 생성 (트랜잭션)
-START TRANSACTION;
-INSERT INTO jobs (employer_id, title, category, hourly_wage, location, work_hours, deadline, description)
-VALUES (4, '신규 카페 오전 알바', '카페/음료', 10300, '서울 강남구 삼성동', '평일 08:00~13:00', '2026-07-01', '오전 시간 가능하신 분');
-COMMIT;
+-- ────────────────────────────────────────────────────────────
+-- [시나리오 5] 공고 등록 (INSERT)
+-- JobDao.insertJob
+-- ────────────────────────────────────────────────────────────
+INSERT INTO jobs (employer_id, title, category, hourly_wage, location, work_hours, deadline, description, status)
+VALUES (4, '신규 카페 오전 알바', '카페/음료', 10300, '서울 강남구 삼성동', '평일 08:00~13:00', '2026-07-01', '오전 시간 가능하신 분', 'OPEN');
 
--- [시나리오 5] 업무 지원 (중복 지원 방지)
--- UNIQUE KEY(user_id, job_id) 제약으로 DB 레벨 중복 차단
--- 5-1. 중복 지원 여부 확인
+-- ────────────────────────────────────────────────────────────
+-- [시나리오 6] 중복 지원 확인 + 지원 등록
+-- ApplicationDao.hasApplied + ApplicationDao.insertApplication
+-- ────────────────────────────────────────────────────────────
+-- 6-1. 중복 지원 여부 확인
 SELECT COUNT(*) AS cnt
 FROM applications
 WHERE user_id = 1 AND job_id = 2;
 
--- 5-2. 지원 등록 (트랜잭션)
-START TRANSACTION;
-INSERT INTO applications (user_id, job_id, cover_letter)
-VALUES (1, 2, '평일 오후 가능합니다. 카페 경험 있습니다.');
-COMMIT;
+-- 6-2. 지원 등록 (UNIQUE KEY 제약으로 DB 레벨 중복 차단)
+INSERT INTO applications (user_id, job_id, status, cover_letter)
+VALUES (1, 2, 'PENDING', '평일 오후 가능합니다. 카페 경험 있습니다.');
 
--- [시나리오 6] 합격 처리 (트랜잭션)
-START TRANSACTION;
-UPDATE applications
-SET status = 'ACCEPTED'
-WHERE application_id = 2;
-COMMIT;
-
--- 합격 여부 확인
-SELECT application_id, user_id, job_id, status
-FROM applications
-WHERE application_id = 2;
-
--- [시나리오 7] 내 지원 현황 조회 (3테이블 JOIN)
-SELECT a.application_id,
-       j.title       AS 공고명,
-       j.hourly_wage AS 시급,
-       j.location    AS 위치,
-       a.status      AS 지원상태,
-       a.applied_at  AS 지원일시
+-- ────────────────────────────────────────────────────────────
+-- [시나리오 7] 내 지원 현황 조회 (마이페이지)
+-- MypageDao.findApplicationsByUserId
+-- ────────────────────────────────────────────────────────────
+SELECT a.application_id, a.user_id, a.job_id,
+       a.applied_at, a.status, a.cover_letter,
+       j.title AS job_title
 FROM applications a
-JOIN jobs  j ON a.job_id  = j.job_id
-JOIN users u ON a.user_id = u.user_id
+JOIN jobs j ON a.job_id = j.job_id
 WHERE a.user_id = 1
 ORDER BY a.applied_at DESC;
 
--- [시나리오 8] 리뷰 등록 & 공고별 리뷰 목록 조회
--- 8-1. 본인 공고 여부 확인
+-- ────────────────────────────────────────────────────────────
+-- [시나리오 8] 내 선호 카테고리 조회 (마이페이지)
+-- MypageDao.findCategoriesByUserId
+-- ────────────────────────────────────────────────────────────
+SELECT category
+FROM user_categories
+WHERE user_id = 1;
+
+-- ────────────────────────────────────────────────────────────
+-- [시나리오 9] 리뷰 등록 + 공고별 리뷰 목록 조회
+-- EvaluationDao.insertEvaluation + EvaluationDao.getEvaluationsByJobId
+-- ────────────────────────────────────────────────────────────
+-- 9-1. 본인 공고 여부 확인 (본인 공고엔 리뷰 불가)
 SELECT employer_id FROM jobs WHERE job_id = 1;
 
--- 8-2. 리뷰 등록
+-- 9-2. 리뷰 등록
 INSERT INTO evaluations (reviewer_id, reviewee_id, job_id, score, comment, eval_type)
 VALUES (1, 4, 1, 5, '근무 환경이 좋고 사장님이 친절합니다.', 'SEEKER_TO_EMPLOYER');
 
--- 8-3. 공고별 리뷰 목록 조회 (JOIN)
-SELECT e.score, e.comment, u.name AS reviewer_name, e.created_at
+-- 9-3. 공고별 리뷰 목록 조회 (JOIN)
+SELECT e.*, u.name AS reviewer_name
 FROM evaluations e
 JOIN users u ON e.reviewer_id = u.user_id
 WHERE e.job_id = 1
 ORDER BY e.created_at DESC;
 
--- [시나리오 9] 지원자별 현황 조회 (고용주 시점)
-SELECT a.application_id,
-       u.name         AS 지원자명,
-       u.phone        AS 연락처,
-       a.cover_letter AS 자기소개,
-       a.status       AS 지원상태,
-       a.applied_at   AS 지원일시
-FROM applications a
-JOIN users u ON a.user_id = u.user_id
-WHERE a.job_id = 1
-ORDER BY a.applied_at ASC;
-
+-- ────────────────────────────────────────────────────────────
 -- [시나리오 10] 카테고리별 평균 시급 통계 (집계 함수)
+-- ────────────────────────────────────────────────────────────
 SELECT category,
        COUNT(*)                   AS 공고수,
        ROUND(AVG(hourly_wage), 0) AS 평균시급,
