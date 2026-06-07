@@ -135,13 +135,13 @@
 
 			            <div class="form-group">
 			                <label>공고 제목</label>
-			                <input type="text" th:field="*{title}">
+			                <input type="text" th:field="*{title}" required>
 			            </div>
 
 			            <div class="row">
 			                <div class="form-group">
 			                    <label>카테고리</label>
-			                    <select th:field="*{category}">
+			                    <select th:field="*{category}" required>
 			                        <option value="카페/음료">카페/음료</option>
 			                        <option value="편의점">편의점</option>
 			                        <option value="서빙/홀">서빙/홀</option>
@@ -152,31 +152,31 @@
 
 			                <div class="form-group">
 			                    <label>시급</label>
-			                    <input type="number" th:field="*{hourlyWage}">
+			                    <input type="number" th:field="*{hourlyWage}" required>
 			                </div>
 			            </div>
 
 			            <div class="form-group">
 			                <label>근무 장소</label>
-			                <input type="text" th:field="*{location}">
+			                <input type="text" th:field="*{location}" required>
 			            </div>
 
 			            <div class="form-group">
 			                <label>근무 시간</label>
 			                <input type="text"
 			                       th:field="*{work_hours}"
-			                       placeholder="예) 평일 09:00~18:00">
+			                       placeholder="예) 평일 09:00~18:00" required>
 			            </div>
 
 			            <div class="form-group">
 			                <label>마감일</label>
 			                <input type="datetime-local"
-			                       th:field="*{deadline}">
+			                       th:field="*{deadline}" required>
 			            </div>
 
 			            <div class="form-group">
 			                <label>업무 설명</label>
-			                <textarea th:field="*{description}"></textarea>
+			                <textarea th:field="*{description}" required></textarea>
 			            </div>
 
 			            <button type="submit"
@@ -190,4 +190,15 @@
 			</div>
 
 		</body>
+		<script>
+		    document.querySelectorAll("input, select, textarea").forEach(function(element) {
+		        element.addEventListener("invalid", function() {
+		            element.setCustomValidity("필수 내용을 작성해주세요.");
+		        });
+
+		        element.addEventListener("input", function() {
+		            element.setCustomValidity("");
+		        });
+		    });
+		</script>
 	</html>
