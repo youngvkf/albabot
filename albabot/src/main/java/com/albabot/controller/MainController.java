@@ -55,6 +55,10 @@ public class MainController {
     public String viewJobs(@RequestParam(required = false) String category,
     		Model model, HttpSession session) {
     	User loginUser = (User) session.getAttribute("loginUser");
+    	
+    	if (loginUser == null) {
+            return "redirect:/login";
+        }
     	model.addAttribute("loginUser", loginUser);
     	
     	 if (category == null || category.isBlank()) {
@@ -66,6 +70,59 @@ public class MainController {
     	    }
 
     	    return "main";
+    }
+    
+    @PostMapping("/jobs/{jobId}/delete")
+    public String deleteJob(@PathVariable int jobId, HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        jobService.deleteJob(jobId, loginUser.getUserId());
+
+        return "redirect:/main";
+    }
+    
+    @GetMapping("/jobs/{id}/edit")
+    public String editJobForm(@PathVariable("id") int jobId,
+                              Model model,
+                              HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        Job job = jobService.getJobById(jobId);
+
+        if (job == null || job.getEmployerId() != loginUser.getUserId()) {
+            return "redirect:/jobs";
+        }
+
+        model.addAttribute("job", job);
+        model.addAttribute("isEdit", true);
+
+        return "job-form";
+    }
+    
+    @PostMapping("/jobs/{id}/edit")
+    public String updateJob(@PathVariable("id") int jobId,
+                            @ModelAttribute Job job,
+                            HttpSession session) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        job.setJobId(jobId);
+        job.setEmployerId(loginUser.getUserId());
+
+        jobService.updateJob(job);
+
+        return "redirect:/jobs/" + jobId;
     }
     
  // 공고 상세 페이지 조회 매핑
@@ -119,8 +176,16 @@ public class MainController {
     
     @GetMapping("/jobs/new")
     public String newJobForm(Model model, HttpSession session) {
-    	model.addAttribute("job", new Job());
-    	return "job-form";
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("job", new Job());
+        model.addAttribute("isEdit", false);
+
+        return "job-form";
     }
     
     @PostMapping("/jobs/new")
@@ -163,7 +228,6 @@ public class MainController {
         // DB에 최종 인서트
         evaluationDao.insertEvaluation(eval);
 
-        // 💡 등록 완료 후 원래 보던 상세 페이지로 다시 새로고침(리다이렉트)
         return "redirect:/jobs/" + jobId;
     }
     

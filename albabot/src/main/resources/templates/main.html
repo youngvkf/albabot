@@ -114,6 +114,41 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
 .write-job-btn:hover {
   background: var(--primary-dark);
 }
+.job-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.job-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.edit-btn {
+  background: #ECFDF5;
+  color: var(--primary-dark);
+  border: 1px solid var(--border);
+  text-decoration: none;
+}
+
+.delete-btn {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
 </style>
 </head>
 <body>
@@ -143,27 +178,42 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); min-heigh
   </div>
   <div class="job-count">공고 <span th:text="${#lists.size(jobs)}">0</span>개</div>
   <div class="job-list">
-    <a th:each="job : ${jobs}"
-       th:href="@{/jobs/{id}(id=${job.jobId})}"
-       class="job-card">
-      <div class="job-card-top">
-        <div>
-          <div class="job-company" th:text="${job.location}">위치</div>
-          <div class="job-title"   th:text="${job.title}">공고 제목</div>
-        </div>
-        <div class="job-badge" th:text="${job.category}">카테고리</div>
-      </div>
-      <div class="job-meta">
-        <span th:if="${job.location}"   >📍 <span th:text="${job.location}"></span></span>
-        <span th:if="${job.work_hours}"  >🕐 <span th:text="${job.work_hours}"></span></span>
-        <span th:if="${job.deadline}"   >📅 <span th:text="${#temporals.format(job.deadline, 'yyyy-MM-dd')}"></span></span>
-      </div>
-      <div class="job-footer">
-        <div class="job-wage"
-             th:if="${job.hourlyWage != null}"
-             th:text="'시급 ' + ${#numbers.formatInteger(job.hourlyWage,3,'COMMA')} + '원'">시급</div>
-      </div>
-    </a>
+	<div th:each="job : ${jobs}" class="job-card">
+	    <a th:href="@{/jobs/{id}(id=${job.jobId})}"
+	       class="job-link">
+	      <div class="job-card-top">
+	        <div>
+	          <div class="job-company" th:text="${job.location}">위치</div>
+	          <div class="job-title"   th:text="${job.title}">공고 제목</div>
+	        </div>
+	        <div class="job-badge" th:text="${job.category}">카테고리</div>
+	      </div>
+	      <div class="job-meta">
+	        <span th:if="${job.location}"   >📍 <span th:text="${job.location}"></span></span>
+	        <span th:if="${job.work_hours}"  >🕐 <span th:text="${job.work_hours}"></span></span>
+	        <span th:if="${job.deadline}"   >📅 <span th:text="${#temporals.format(job.deadline, 'yyyy-MM-dd')}"></span></span>
+	      </div>
+	      <div class="job-footer">
+	        <div class="job-wage"
+	             th:if="${job.hourlyWage != null}"
+	             th:text="'시급 ' + ${#numbers.formatInteger(job.hourlyWage,3,'COMMA')} + '원'">시급</div>
+	      </div>
+	    </a>
+		<div class="job-actions"
+		       th:if="${loginUser != null and job.employerId == loginUser.userId}">
+		    <a th:href="@{/jobs/{id}/edit(id=${job.jobId})}" class="edit-btn">수정</a>
+
+		    <form th:action="@{/jobs/{id}/delete(id=${job.jobId})}"
+		          method="post"
+		          style="display:inline;">
+		      <button type="submit"
+		              class="delete-btn"
+		              onclick="return confirm('정말 삭제하시겠습니까?');">
+		        삭제
+		      </button>
+		    </form>
+		  </div>
+	</div>
     <div class="empty-state" th:if="${#lists.isEmpty(jobs)}">
       <div class="empty-icon">🔍</div>
       <p>해당 카테고리의 공고가 없어요</p>

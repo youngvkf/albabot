@@ -127,11 +127,11 @@
 
 			    <div class="form-card">
 
-			        <div class="title">공고 작성</div>
+			        <div class="title" th:text="${isEdit} ? '공고 수정' : '공고 작성' ">공고 작성</div>
 
-			        <form th:action="@{/jobs/new}"
-			              th:object="${job}"
-			              method="post">
+					<form th:action="${isEdit} ? @{/jobs/{id}/edit(id=${job.jobId})} : @{/jobs/new}"
+					      th:object="${job}"
+					      method="post">
 
 			            <div class="form-group">
 			                <label>공고 제목</label>
@@ -179,10 +179,11 @@
 			                <textarea th:field="*{description}" required></textarea>
 			            </div>
 
-			            <button type="submit"
-			                    class="submit-btn">
-			                공고 등록하기
-			            </button>
+						<button type="submit"
+						        class="submit-btn"
+						        th:text="${isEdit} ? '공고 수정하기' : '공고 등록하기'">
+						    공고 등록하기
+						</button>
 
 			        </form>
 

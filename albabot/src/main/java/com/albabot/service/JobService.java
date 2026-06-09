@@ -80,4 +80,16 @@ public class JobService {
 	public int countApplication(int jobId) {
 		return applicationDao.getApplicationByJobId(jobId);
 	}
+	
+	public void updateJob(Job job) {
+        jobDao.updateJob(job);
+    }
+	
+	public void deleteJob(int jobId, int employerId) {
+        jobDao.deleteJob(jobId, employerId);
+    }
+	
+	public Job getJobById(int jobId) {
+        return jobDao.getJobById(jobId);
+    }
 }

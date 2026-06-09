@@ -83,45 +83,60 @@ public class JobDao {
 	}
 	
 	public void updateJob(Job job) {
-		String sql = "UPDATE jobs SET employer_id = ?, title = ?, category = ?, description = ? WHERE job_id = ?";
+	    String sql = "UPDATE jobs "
+	               + "SET title = ?, category = ?, hourly_wage = ?, location = ?, "
+	               + "work_hours = ?, deadline = ?, description = ?, status = ? "
+	               + "WHERE job_id = ? AND employer_id = ?";
 
-		try (Connection conn = dataSource.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    try (Connection conn = dataSource.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-			pstmt.setInt(1, job.getEmployerId());
-			pstmt.setString(2, job.getTitle());
-			pstmt.setString(3, job.getCategory());
-			pstmt.setString(4, job.getDescription());
-			pstmt.setInt(5, job.getJobId()); 
+	        pstmt.setString(1, job.getTitle());
+	        pstmt.setString(2, job.getCategory());
+	        pstmt.setString(3, job.getHourlyWage());
+	        pstmt.setString(4, job.getLocation());
+	        pstmt.setString(5, job.getWork_hours());
+	        pstmt.setTimestamp(6, Timestamp.valueOf(job.getDeadline()));
+	        pstmt.setString(7, job.getDescription());
+	        pstmt.setString(8, "OPEN");
 
-			int rows = pstmt.executeUpdate();
-			if (rows > 0) {
-				System.out.println("게시글이 수정되었습니다.");
-			} else {
-				System.out.println("해당 job_id의 게시글이 존재하지 않습니다.");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	        pstmt.setInt(9, job.getJobId());
+	        pstmt.setInt(10, job.getEmployerId());
+
+	        int result = pstmt.executeUpdate();
+	        System.out.println("수정된 행 수: " + result);
+
+	        if (result > 0) {
+	            System.out.println(job.getJobId() + "번 공고가 수정되었습니다.");
+	        } else {
+	            System.out.println("수정 권한이 없거나 존재하지 않는 공고입니다.");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	}
 	
-	public void deleteJob(int jobId) {
-		String sql = "DELETE FROM jobs WHERE job_id = ?";
+	public void deleteJob(int jobId, int employerId) {
+	    String sql = "DELETE FROM jobs WHERE job_id = ? AND employer_id = ?";
 
-		try (Connection conn = dataSource.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    try (Connection conn = dataSource.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-			pstmt.setInt(1, jobId);
+	        pstmt.setInt(1, jobId);
+	        pstmt.setInt(2, employerId);
 
-			int rows = pstmt.executeUpdate();
-			if (rows > 0) {
-				System.out.println("게시글이 삭제되었습니다.");
-			} else {
-				System.out.println("해당 job_id의 게시글이 존재하지 않습니다.");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	        int result = pstmt.executeUpdate();
+
+	        if (result > 0) {
+	            System.out.println(jobId + "번 공고가 삭제되었습니다.");
+	        } else {
+	            System.out.println("삭제 권한이 없거나 존재하지 않는 공고입니다.");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	}
 
 	// 공고 ID로 단건 조회하는 메서드
