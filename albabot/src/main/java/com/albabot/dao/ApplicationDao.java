@@ -67,4 +67,25 @@ public class ApplicationDao {
 
 		    return false;
 	}
+	
+	public int getApplicationByJobId(int jobId) {
+		String sql = "SELECT COUNT(*) FROM applications WHERE job_id = ?";
+		int count = 0;
+		try (Connection conn = dataSource.getConnection();
+		         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			
+		        pstmt.setInt(1, jobId);
+		        
+		        try (ResultSet rs = pstmt.executeQuery()) {
+		            if (rs.next()) {
+		                count = rs.getInt(1);
+		            }
+		        }
+
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+
+		    return count;
+	}
 }

@@ -76,4 +76,8 @@ public class JobService {
 		
 		return true;
 	}
+	
+	public int countApplication(int jobId) {
+		return applicationDao.getApplicationByJobId(jobId);
+	}
 }

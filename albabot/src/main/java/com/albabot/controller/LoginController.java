@@ -5,7 +5,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import com.albabot.model.User;
@@ -21,11 +23,28 @@ public class LoginController {
 	
 	// 로그인 페이지 열기
 	@GetMapping("/login")
-	public String loginPage(@RequestParam(value = "error", required = false) String error, Model model) {
+	public String loginPage(@RequestParam(value = "error", required = false) String error, Model model, HttpSession session, HttpServletResponse response) {
+		response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0");
+	    response.setHeader("Pragma", "no-cache");
+	    response.setDateHeader("Expires", 0);
+		
+		User loginUser = (User)session.getAttribute("loginUser");	
+		
 		if (error != null) {
 			model.addAttribute("error", "이메일 또는 비밀번호가 올바르지 않습니다.");
 		}
+		
+		if (loginUser != null) {
+			return "redirect:/main";
+		}
+		
 		return "login";
+	}
+	
+	@GetMapping("/session-check")
+	@ResponseBody
+	public boolean sessionCheck(HttpSession session) {
+	    return session.getAttribute("loginUser") != null;
 	}
 	
 	@PostMapping("/login")

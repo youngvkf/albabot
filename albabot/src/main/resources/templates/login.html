@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>AlbaBot - 로그인</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
@@ -84,5 +87,16 @@ body {
   </form>
   <div class="footer-text">AlbaBot · 2026-1 데이터베이스 팀 프로젝트</div>
 </div>
+<script>
+  window.addEventListener("pageshow", function () {
+    fetch("/session-check")
+      .then(res => res.json())
+      .then(isLogin => {
+        if (isLogin) {
+          location.href = "/main";
+        }
+      });
+  });
+</script>
 </body>
 </html>

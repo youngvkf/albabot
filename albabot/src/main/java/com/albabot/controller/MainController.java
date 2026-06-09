@@ -41,6 +41,9 @@ public class MainController {
     @GetMapping("/main")
     public String mainPage(Model model, HttpSession session) {
     	User loginUser = (User) session.getAttribute("loginUser");
+    	if (loginUser == null) {
+    		return "redirect:/login";
+    	}
     	model.addAttribute("loginUser", loginUser);
     	
         model.addAttribute("jobs", jobService.showAllJobs());
@@ -80,7 +83,7 @@ public class MainController {
         model.addAttribute("evaluations", evaluations);
         
         // 지원자 수 표기 오류(null명) 방지
-        model.addAttribute("applicationCount", 2); 
+        model.addAttribute("applicationCount", jobService.countApplication(jobId)); 
         
         // 기본값을 false로 명시해 두고, 본인 공고일 때만 true로 변경하여 확실한 boolean 값을 전달합니다.
         boolean isEmployerMe = false;
